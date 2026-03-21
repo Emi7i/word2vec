@@ -14,14 +14,14 @@ class Tokenizer:
         self.load_words()
         self.tokenize(self.words)
 
-    def load_words(self) -> None:
+    def load_words(self):
         """ Loads words from a file, replaces specific characters and calls tokenize function """
         with open(self.text_file, "r") as file:
             text = file.read().lower()
             text = self.PATTERN.sub(' ', text)
             self.words = text.split()
 
-    def tokenize(self, list_of_words: list[str]) -> None:
+    def tokenize(self, list_of_words: list[str]):
         """ Maps the list of words into the index2word and word2index dictionaries """
 
         if len(list_of_words) == 0:
