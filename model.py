@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 import numpy as np
 
@@ -23,7 +24,7 @@ class Model:
         # Output weight matrix
         self.W = np.random.rand(self.vocabulary_size, embedding_dim)
 
-    def train(self, epochs: int, learning_rate: float):
+    def train(self, epochs: int, learning_rate: float, negative_samples_num: int):
         """Train the model by iterating over every word for a given number of epochs,
         performing a forward pass, computing the loss, and updating the weights via backpropagation.
         """
@@ -32,10 +33,10 @@ class Model:
             total_loss = 0.0
             for i, word in enumerate(self.tokenizer.train):
                 target_index = self.tokenizer.word2index[word]
-                probs, surround_words, context_vec = self.forward_pass(i)
-                loss = self.loss(target_index, probs)
+                scores, surround_words, context_vec = self.forward_pass(i)
+                loss, negative_indices = self.loss(target_index, scores, negative_samples_num)
                 total_loss += loss
-                self.backward_pass(target_index, probs, surround_words, context_vec, learning_rate)
+                self.backward_pass(target_index, surround_words, context_vec, learning_rate, negative_indices)
                 print(f"\rEpoch {epoch} | Word {i}/{len(self.tokenizer.train)}"
                       f" | Loss: {total_loss / (i + 1):.4f}", end="")
             self.save(loss = total_loss / len(self.tokenizer.train), learning_rate=learning_rate)
@@ -51,8 +52,8 @@ class Model:
         """Predict the top 5 most likely words."""
         # Let's assume the tokenizer has all the words from the validation file
 
-        probs, surround_words, context_vec = self.forward_pass(target_index, mode)
-        top_indices = np.argsort(probs)[::-1][:5]
+        scores, surround_words, context_vec = self.forward_pass(target_index, mode)
+        top_indices = np.argsort(scores)[::-1][:5]
         print(f"{[self.tokenizer.index2word[i] for i in surround_words]}: ")
         print([self.tokenizer.index2word[i] for i in top_indices])
 
@@ -66,29 +67,52 @@ class Model:
         surround_words = self.get_context_words(target_index, mode)
         context_vec = self.average_words(surround_words)
         scores = context_vec @ self.W.T
-        probs = self.softmax(scores)
-        return probs, surround_words, context_vec
+        return scores, surround_words, context_vec
 
-    @staticmethod
-    def loss(target_index: int, probs: np.ndarray) -> float:
-        """Compute cross-entropy loss: -ln(e^(W[target] · h) / ∑_w e^(W[w] · h))."""
-        loss = -np.log(probs[target_index])
-        return loss
+
+    def loss(self, target_index: int, scores: np.ndarray, negative_samples_num: int) -> tuple[float, list[int]]:
+        """Negative sampling loss: L = log σ(v'_target · h) + Σ log σ(-v'_negative · h)."""
+        # positive sample
+        loss = -np.log(self.sigmoid(scores[target_index]))
+
+        # negative samples (do not include the target word)
+        negative_indices = random.sample(
+            [i for i in range(self.vocabulary_size) if i != target_index],
+            negative_samples_num
+        )
+
+        for idx in negative_indices:
+            loss -= np.log(1 - self.sigmoid(scores[idx]))
+
+        return float(loss), negative_indices
 
     def backward_pass(self,
                       target_index: int,
-                      probs: np.ndarray,
                       surround_words: list[int],
                       vector: np.ndarray,
-                      learning_rate: float):
-        """Compute gradients and update weights."""
-        dL_dy = probs.copy()
-        dL_dy[target_index] -= 1
-        dL_dx = self.W.T @ dL_dy # we are using probs which are already averaged
+                      learning_rate: float,
+                      negative_indices):
+        """Compute gradients and update weights.
 
-        self.W -= learning_rate * np.outer(dL_dy, vector)
+        Based on Bengio et al. (2003), Section 2, Backward/Update Phase:
+        - dL_dy_pos: ∂L/∂y_j = 1(j==wt) - p_j for target word
+        - dL_dy_neg: ∂L/∂y_j = 0 - p_j for negative samples
+        - W updates: W_j ← W_j + ε * ∂L/∂y_j * x
+        - dL_dx: ∂L/∂x accumulated from target and negative words
+        - C updates: C(wt-k) ← C(wt-k) + ε * ∂L/∂x(k)
+        """
+        dL_dy_pos = self.sigmoid(self.W[target_index] @ vector) - 1
+
+        dL_dy_neg = self.sigmoid(self.W[negative_indices] @ vector)
+
+        # Update W for target and negative words only
+        self.W[target_index] -= learning_rate * dL_dy_pos * vector
+        self.W[negative_indices] -= learning_rate * dL_dy_neg[:, np.newaxis] * vector
+
+        dL_dx = dL_dy_pos * self.W[target_index] + np.sum(dL_dy_neg[:, np.newaxis] * self.W[negative_indices], axis=0)
+
         for index in surround_words:
-            self.C[index] -= learning_rate * dL_dx  # update context rows
+            self.C[index] -= learning_rate * dL_dx
 
     def average_words(self, indexes: list[int]) -> np.ndarray:
         """Compute the average of the context word vectors."""
@@ -117,6 +141,11 @@ class Model:
         e_x = np.exp(x - np.max(x))
         return e_x / e_x.sum()
 
+    @staticmethod
+    def sigmoid(x: np.ndarray) -> np.ndarray:
+        """Compute sigmoid values for each sets of scores in x."""
+        return 1 / (1 + np.exp(-x))
+
     def save(self, path: str = "model", loss: float = 0.0, learning_rate: float = 0.0):
         """Save the model weights and metadata to disk."""
         os.makedirs(path, exist_ok=True)
@@ -131,6 +160,22 @@ class Model:
                 "learning_rate": f"{learning_rate}",
             }, f)
         print("\nModel saved!")
+
+    def most_similar(self, word: str, top_n: int = 5) -> list[str]:
+        """Find most similar words using cosine similarity."""
+        if word not in self.tokenizer.word2index:
+            print(f"Word '{word}' not in vocabulary")
+            return []
+
+        word_index = self.tokenizer.word2index[word]
+        word_vector = self.C[word_index]
+
+        similarities = self.C @ word_vector / (
+                np.linalg.norm(self.C, axis=1) * np.linalg.norm(word_vector)
+        )
+
+        top_indices = np.argsort(similarities)[::-1][1:top_n + 1]
+        return [self.tokenizer.index2word[i] for i in top_indices]
 
     def load(self, path: str = "model"):
         """Load the model from the specified path."""

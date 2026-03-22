@@ -1,1 +1,1 @@
-{"epoch": 9, "embedding_dim": 100, "window_size": 5, "loss": "5.4025", "learning_rate": "0.005"}
+{"epoch": 49, "embedding_dim": 100, "window_size": 5, "loss": "0.9494", "learning_rate": "0.005"}
