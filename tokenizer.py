@@ -4,7 +4,7 @@ import re
 class Tokenizer:
     PATTERN = re.compile(r'[!"#$%&()*+,\-./:;<=>?@\[\]^_`{|}~\t\n]')
 
-    def __init__(self, text_file: str):
+    def __init__(self, text_file: str, frequency: int = 0):
         self.text_file = text_file
         self.words = []
 
@@ -15,7 +15,7 @@ class Tokenizer:
         self.word2index = {}
         self.index2word = {}
 
-        self.load_words()
+        self.load_words(frequency)
         self.tokenize(self.words)
         self.init_dataset()
 
@@ -29,12 +29,18 @@ class Tokenizer:
         self.valid = self.words[train_end:valid_end]
         self.test = self.words[valid_end:]
 
-    def load_words(self):
+    def load_words(self, frequency: int = 0):
         """Load words from a file, replace specific characters and calls tokenize function."""
         with open(self.text_file, "r", encoding="utf-8") as file:
             text = file.read().lower()
             text = self.PATTERN.sub(' ', text)
             self.words = text.split()
+
+        # Drop words with frequency lower than (defined in main.py)
+        counts = {}
+        for word in self.words:
+            counts[word] = counts.get(word, 0) + 1
+        self.words = [w for w in self.words if counts[w] >= frequency]
 
     def tokenize(self, list_of_words: list[str]):
         """Map the list of words into the index2word and word2index dictionaries."""
@@ -47,3 +53,5 @@ class Tokenizer:
             if word not in self.word2index.keys():
                 self.word2index[word] = len(self.word2index)
                 self.index2word[len(self.index2word)] = word
+
+        print(f"Vocab size: {len(self.word2index)}")
