@@ -38,7 +38,7 @@ class Model:
                 self.backward_pass(target_index, probs, surround_words, context_vec, learning_rate)
                 print(f"\rEpoch {epoch} | Word {i}/{len(self.tokenizer.train)}"
                       f" | Loss: {total_loss / (i + 1):.4f}", end="")
-            self.save(loss=total_loss, learning_rate=learning_rate)
+            self.save(loss = total_loss / len(self.tokenizer.train), learning_rate=learning_rate)
             print()
 
     def validate(self):
@@ -127,7 +127,7 @@ class Model:
                 "epoch": self.current_epoch,
                 "embedding_dim": self.embedding_dim,
                 "window_size": self.window_size,
-                "loss": f"{loss}",
+                "loss": f"{loss:.4f}",
                 "learning_rate": f"{learning_rate}",
             }, f)
         print("\nModel saved!")
