@@ -1,0 +1,74 @@
+Vocab size: 13966
+Processed file~!
+Training model!
+Epoch 0 | Word 750488/750489 | Loss: 4.0646
+Model saved!
+
+Epoch 1 | Word 750488/750489 | Loss: 2.0959
+Model saved!
+
+Epoch 2 | Word 750488/750489 | Loss: 1.7565
+Model saved!
+
+Epoch 3 | Word 750488/750489 | Loss: 1.6047
+Model saved!
+
+Epoch 4 | Word 750488/750489 | Loss: 1.5146
+Model saved!
+
+Epoch 5 | Word 750488/750489 | Loss: 1.4516
+Model saved!
+
+Epoch 6 | Word 750488/750489 | Loss: 1.4007
+Model saved!
+
+Epoch 7 | Word 750488/750489 | Loss: 1.3591
+Model saved!
+
+Epoch 8 | Word 750488/750489 | Loss: 1.3279
+Model saved!
+
+Epoch 9 | Word 750488/750489 | Loss: 1.3466
+Model saved!
+
+Validating!
+['predecessor', 'of', 'some', 'buildings', 'with']:
+['the', 'antimatter', 'some', 'a', 'buildings']
+['a', 'predecessor', 'of', 'some', 'buildings', 'a', 'similar', 'appearance', 'the', 'one']:
+['antimatter', 'to', 'in', 'of', 'is']
+['with', 'a', 'similar', 'appearance', 'the', 'nine', 'two', 'one', 'einstein', 'tower']:
+['in', 'of', 'to', 'the', 'by']
+['one', 'nine', 'two', 'one', 'einstein', 'in', 'designed', 'by', 'erich', 'solomon']:
+['nine', 'zero', 'one', 'eight', 'the']
+['tower', 'in', 'designed', 'by', 'erich', 'r', 'museum', 'in', 'new', 'york']:
+['the', 'york', 'nine', 'and', 'a']
+['solomon', 'r', 'museum', 'in', 'new', 'designed', 'by', 'frank', 'lloyd', 'wright']:
+['the', 'nine', 'york', 'and', 'a']
+['york', 'designed', 'by', 'frank', 'lloyd', 'chapelle', 'dame', 'du', 'france', 'designed']:
+['was', 's', 'new', 'his', 'anne']
+['wright', 'chapelle', 'dame', 'du', 'france', 'by', 'le', 'the', 'and', 'other']:
+['antimatter', 'buildings', 'le', 'barcelona', 'farther']
+['designed', 'by', 'le', 'the', 'and', 'words', 'by', 'austrian', 'architect', 'disney']:
+['of', 'in', 'antimatter', 'the', 'to']
+['other', 'words', 'by', 'austrian', 'architect', 'concert', 'hall', 'in', 'los', 'angeles']:
+['the', 'and', 'a', 'of', 'in']
+['disney', 'concert', 'hall', 'in', 'los', 'by', 'frank', 'free', 'exhibitions', 'are']:
+['and', 'the', 'in', 'a', 'to']
+['angeles', 'by', 'frank', 'free', 'exhibitions', 'often', 'held', 'on', 'the', 'first']:
+['at', 'was', 'in', 'by', 'to']
+['are', 'often', 'held', 'on', 'the', 'floor', 'which', 'also', 'provides', 'some']:
+['to', 'the', 'of', 'is', 'at']
+['first', 'floor', 'which', 'also', 'provides', 'opportunity', 'to', 'see', 'the', 'interior']:
+['the', 'of', 'to', 'is', 'in']
+['some', 'opportunity', 'to', 'see', 'the', 'design', 'there', 'is', 'a', 'charge']:
+['antimatter', 'in', 'of', 'to', 'by']
+['interior', 'design', 'there', 'is', 'a', 'of', 'seven', 'for', 'entrance', 'to']:
+['the', 'in', 'antimatter', 'and', 'to']
+['charge', 'of', 'seven', 'for', 'entrance', 'the', 'apartments', 'and', 'roof', 'casa']:
+['antimatter', 'the', 'buildings', 'to', 'energy']
+['to', 'the', 'apartments', 'and', 'roof', 'mil', 'in', 'the', 'media', 'a']:
+['antimatter', 'buildings', 'aisles', 'energy', 'at']
+['casa', 'mil', 'in', 'the', 'media', 'scene', 'in', 'reporter', 'a', 'film']:
+['antimatter', 'of', 'to', 'in', 'at']
+['a', 'scene', 'in', 'reporter', 'a', 'directed', 'by', 'was', 'filmed', 'on']:
+['at', 'by', 'in', 'to', 'the']

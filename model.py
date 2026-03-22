@@ -144,7 +144,7 @@ class Model:
     @staticmethod
     def sigmoid(x: np.ndarray) -> np.ndarray:
         """Compute sigmoid values for each sets of scores in x."""
-        return 1 / (1 + np.exp(-x))
+        return np.clip(1 / (1 + np.exp(-x)), 1e-7, 1 - 1e-7) # clip so log doesn't blow up
 
     def save(self, path: str = "model", loss: float = 0.0, learning_rate: float = 0.0):
         """Save the model weights and metadata to disk."""

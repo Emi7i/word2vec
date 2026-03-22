@@ -4,7 +4,7 @@ import re
 class Tokenizer:
     PATTERN = re.compile(r'[!"#$%&()*+,\-./:;<=>?@\[\]^_`{|}~\t\n]')
 
-    def __init__(self, text_file: str, frequency: int = 0):
+    def __init__(self, text_file: str, frequency: int = 0, max_vocabulary_size: int = 0):
         self.text_file = text_file
         self.words = []
 
@@ -15,7 +15,7 @@ class Tokenizer:
         self.word2index = {}
         self.index2word = {}
 
-        self.load_words(frequency)
+        self.load_words(frequency, max_vocabulary_size)
         self.tokenize(self.words)
         self.init_dataset()
 
@@ -29,12 +29,15 @@ class Tokenizer:
         self.valid = self.words[train_end:valid_end]
         self.test = self.words[valid_end:]
 
-    def load_words(self, frequency: int = 0):
+    def load_words(self, frequency: int = 0, max_vocabulary_size: int = 0):
         """Load words from a file, replace specific characters and calls tokenize function."""
         with open(self.text_file, "r", encoding="utf-8") as file:
             text = file.read().lower()
             text = self.PATTERN.sub(' ', text)
             self.words = text.split()
+
+        if max_vocabulary_size > 0:
+            self.words = self.words[:max_vocabulary_size]
 
         # Drop words with frequency lower than (defined in main.py)
         counts = {}
