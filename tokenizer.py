@@ -20,6 +20,7 @@ class Tokenizer:
         self.init_dataset()
 
     def init_dataset(self):
+        """Split the dataset into train, validation and test sets. Use 80/10/10 split."""
         num_words = len(self.words)
         train_end = int(num_words * 0.8)
         valid_end = int(num_words * 0.9)
@@ -29,14 +30,14 @@ class Tokenizer:
         self.test = self.words[valid_end:]
 
     def load_words(self):
-        """ Loads words from a file, replaces specific characters and calls tokenize function """
+        """Load words from a file, replace specific characters and calls tokenize function."""
         with open(self.text_file, "r", encoding="utf-8") as file:
             text = file.read().lower()
             text = self.PATTERN.sub(' ', text)
             self.words = text.split()
 
     def tokenize(self, list_of_words: list[str]):
-        """ Maps the list of words into the index2word and word2index dictionaries """
+        """Map the list of words into the index2word and word2index dictionaries."""
 
         if len(list_of_words) == 0:
             print("No words to tokenize")
