@@ -345,3 +345,4 @@ There are a few ways we could improve the program:
  - Filtering of common words such as "if, and, of, then, are, was..."
  - Lowering the learning rate or setting embedded dimensions to a higher value
  - Using more than 750k words
+ - Better initialization of weights

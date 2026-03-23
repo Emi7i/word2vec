@@ -1,7 +1,7 @@
 # word2vec
 Implementation of Word2Vec (CBOW) from scratch using only NumPy, based on Mikolov et al. (2013). Includes tokenizer, negative sampling, and model checkpointing.
 
-> NOTE: Check out explanation.md to get a better understanding of the code.
+> NOTE: Check out `explanation.md` to get a better understanding of the code.
 
 ## Dataset
 This project uses the text8 dataset. To download it:
@@ -13,12 +13,34 @@ For faster results, you can use the textFile that's in the repository.<br>
 It contains the text of the book "His last bow : Some later reminiscences of Sherlock Holmes" by Arthur Conan Doyle.<br>
 Link: https://www.gutenberg.org/ebooks/2350
 
+---
+
 ## Results
 ```
 most_similar("king")  → ['alexander', 'british', 'william']
 most_similar("paris") → ['france', 'de', 'department']
 most_similar("queen") → ['spain', 'daughter', 'governor']
 ```
+---
+
+## Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Emi7i/word2vec.git
+   cd word2vec
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the model:**
+   ```bash
+   python main.py
+   ```
+---
 
 ## How to use the code
 The only changes required should be in main.py where you can use functions and change hyperparameters.
@@ -79,6 +101,8 @@ model.most_similar("king")
 ```
 This uses cosine similarity on the learned embeddings to find the most semantically similar words to the input word. Returns a list of the top 5 most similar words.
 > NOTE: Use it in a `print()` function. Example: `print(model.most_similar("king"))`.
+
+---
 
 ## References
 - [Word2vec - Wikipedia](https://en.wikipedia.org/wiki/Word2vec)
