@@ -8,26 +8,12 @@ class Tokenizer:
         self.text_file = text_file
         self.words = []
 
-        self.train = []
-        self.valid = []
-        self.test = []
-
         self.word2index = {}
         self.index2word = {}
 
         self.load_words(frequency, max_vocabulary_size)
         self.tokenize(self.words)
         self.init_dataset()
-
-    def init_dataset(self):
-        """Split the dataset into train, validation and test sets. Use 80/10/10 split."""
-        num_words = len(self.words)
-        train_end = int(num_words * 0.8)
-        valid_end = int(num_words * 0.9)
-
-        self.train = self.words[:train_end]
-        self.valid = self.words[train_end:valid_end]
-        self.test = self.words[valid_end:]
 
     def load_words(self, frequency: int = 0, max_vocabulary_size: int = 0):
         """Load words from a file, replace specific characters and calls tokenize function."""

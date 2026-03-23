@@ -55,15 +55,7 @@ Setting `EPOCHS` to 6 will continue training for 3 more epochs.
 - `LEARNING_RATE` - The learning rate for gradient descent.
 - `NEGATIVE_SAMPLES_NUM` - Number of negative samples used during training. Set to 0 to disable negative sampling. Recommended values are between 5 and 20.
 
-### 6. Validate the model:
-```py
-model.validate()
-```
-This will print the top 5 most likely predicted words for every 5th word in the validation set. 
-Meaning it will use the surrounding words around that 5th word to make a prediction of what that wourd should be.
-The first word in the results is the most likely one. 
-
-### 7. Find most similar words:
+### 6. Find most similar words - validate the model:
 ```py
 model.most_similar("king")
 ```

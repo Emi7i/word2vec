@@ -31,40 +31,23 @@ class Model:
         for epoch in range(self.current_epoch, epochs):
             self.current_epoch = epoch
             total_loss = 0.0
-            for i, word in enumerate(self.tokenizer.train):
+            for i, word in enumerate(self.tokenizer.words):
                 target_index = self.tokenizer.word2index[word]
                 scores, surround_words, context_vec = self.forward_pass(i)
                 loss, negative_indices = self.loss(target_index, scores, negative_samples_num)
                 total_loss += loss
                 self.backward_pass(target_index, surround_words, context_vec, learning_rate, negative_indices)
-                print(f"\rEpoch {epoch} | Word {i}/{len(self.tokenizer.train)}"
+                print(f"\rEpoch {epoch} | Word {i}/{len(self.tokenizer.words)}"
                       f" | Loss: {total_loss / (i + 1):.4f}", end="")
-            self.save(loss = total_loss / len(self.tokenizer.train), learning_rate=learning_rate)
+            self.save(loss = total_loss / len(self.tokenizer.words), learning_rate=learning_rate)
             print()
 
-    def validate(self):
-        """Validate the model by predicting the top 5 most likely words."""
-        # range(len(valid_tk.words))
-        for i in range(0, 100, 5):
-            self.predict(i, "Valid")
-
-    def predict(self, target_index: int, mode: str = "Train"):
-        """Predict the top 5 most likely words."""
-        # Let's assume the tokenizer has all the words from the validation file
-
-        scores, surround_words, context_vec = self.forward_pass(target_index, mode)
-        top_indices = np.argsort(scores)[::-1][:5]
-        print(f"{[self.tokenizer.index2word[i] for i in surround_words]}: ")
-        print([self.tokenizer.index2word[i] for i in top_indices])
-
-    def forward_pass(self,
-                     target_index: int,
-                     mode: str = "Train") -> tuple[np.ndarray, list[int], np.ndarray]:
+    def forward_pass(self, target_index: int) -> tuple[np.ndarray, list[int], np.ndarray]:
         """Compute the scores and probabilities for the surrounding words given the center word.
         Get the average of the context word vectors,
         Multiply by the output weight matrix.
         """
-        surround_words = self.get_context_words(target_index, mode)
+        surround_words = self.get_context_words(target_index)
         context_vec = self.average_words(surround_words)
         scores = context_vec @ self.W.T
         return scores, surround_words, context_vec
@@ -118,17 +101,8 @@ class Model:
         """Compute the average of the context word vectors."""
         return self.C[indexes].mean(axis=0)
 
-    def get_context_words(self, target_index: int, mode: str = "Train") -> list[int]:
+    def get_context_words(self, target_index: int) -> list[int]:
         """Get the surrounding words around the target word and returns their indexes."""
-        if mode == "Train":
-            wordlist = self.tokenizer.train
-        elif mode == "Valid":
-            wordlist = self.tokenizer.valid
-        elif mode == "Test":
-            wordlist = self.tokenizer.test
-        else:
-            raise ValueError("Invalid mode")
-
         start = max(0, target_index - self.window_size)
         end = min(len(wordlist), target_index + self.window_size + 1)
 
@@ -146,21 +120,6 @@ class Model:
         """Compute sigmoid values for each sets of scores in x."""
         return np.clip(1 / (1 + np.exp(-x)), 1e-7, 1 - 1e-7) # clip so log doesn't blow up
 
-    def save(self, path: str = "model", loss: float = 0.0, learning_rate: float = 0.0):
-        """Save the model weights and metadata to disk."""
-        os.makedirs(path, exist_ok=True)
-        np.save(f"{path}/C.npy", self.C)
-        np.save(f"{path}/W.npy", self.W)
-        with open(f"{path}/metadata.json", "w") as f:
-            json.dump({
-                "epoch": self.current_epoch,
-                "embedding_dim": self.embedding_dim,
-                "window_size": self.window_size,
-                "loss": f"{loss:.4f}",
-                "learning_rate": f"{learning_rate}",
-            }, f)
-        print("\nModel saved!")
-
     def most_similar(self, word: str, top_n: int = 5) -> list[str]:
         """Find most similar words using cosine similarity."""
         if word not in self.tokenizer.word2index:
@@ -176,6 +135,21 @@ class Model:
 
         top_indices = np.argsort(similarities)[::-1][1:top_n + 1]
         return [self.tokenizer.index2word[i] for i in top_indices]
+
+    def save(self, path: str = "model", loss: float = 0.0, learning_rate: float = 0.0):
+        """Save the model weights and metadata to disk."""
+        os.makedirs(path, exist_ok=True)
+        np.save(f"{path}/C.npy", self.C)
+        np.save(f"{path}/W.npy", self.W)
+        with open(f"{path}/metadata.json", "w") as f:
+            json.dump({
+                "epoch": self.current_epoch,
+                "embedding_dim": self.embedding_dim,
+                "window_size": self.window_size,
+                "loss": f"{loss:.4f}",
+                "learning_rate": f"{learning_rate}",
+            }, f)
+        print("\nModel saved!")
 
     def load(self, path: str = "model"):
         """Load the model from the specified path."""

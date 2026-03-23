@@ -21,5 +21,3 @@ if __name__ == "__main__":
     model.load()
     print("Training model!")
     model.train(EPOCHS, LEARNING_RATE, NEGATIVE_SAMPLES_NUM)
-    print("Validating!")
-    model.validate()
