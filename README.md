@@ -1,6 +1,8 @@
 # word2vec
 Implementation of Word2Vec (CBOW) from scratch using only NumPy, based on Mikolov et al. (2013). Includes tokenizer, negative sampling, and model checkpointing.
 
+> NOTE: Check out explanation.md to get a better understanding of the code.
+
 ## Dataset
 This project uses the text8 dataset. To download it:
 1. Download from http://mattmahoney.net/dc/text8.zip
@@ -60,7 +62,7 @@ Setting `EPOCHS` to 6 will continue training for 3 more epochs.
 model.most_similar("king")
 ```
 This uses cosine similarity on the learned embeddings to find the most semantically similar words to the input word. Returns a list of the top 5 most similar words.
-NOTE: Use it in a `print()` function. Exaple: `print(model.most_similar("king"))`.
+> NOTE: Use it in a `print()` function. Example: `print(model.most_similar("king"))`.
 
 ## References
 - [Word2vec - Wikipedia](https://en.wikipedia.org/wiki/Word2vec)
