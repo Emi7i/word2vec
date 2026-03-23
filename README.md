@@ -9,8 +9,8 @@ This project uses the text8 dataset. To download it:
 2. Extract the zip file
 3. Place the `text8` file in the project root
 
-For faster results, you can use the textFile that's in the repository.
-It contains the text of the book "His last bow : Some later reminiscences of Sherlock Holmes" by Arthur Conan Doyle.
+For faster results, you can use the textFile that's in the repository.<br>
+It contains the text of the book "His last bow : Some later reminiscences of Sherlock Holmes" by Arthur Conan Doyle.<br>
 Link: https://www.gutenberg.org/ebooks/2350
 
 ## Results
@@ -24,6 +24,22 @@ most_similar("queen") → ['spain', 'daughter', 'governor']
 The only changes required should be in main.py where you can use functions and change hyperparameters.
 
 ### 1. Change the hyperparameters to your liking
+What worked the best for me:
+```python
+# Hyperparameters
+EPOCHS = 10
+LEARNING_RATE = 0.005
+EMBEDDING_DIM = 100
+WINDOW_SIZE = 5
+NEGATIVE_SAMPLES_NUM = 7
+
+# Dataset
+DATASET_PATH = "text8.txt"
+FREQUENCY = 5
+MAX_VOCABULARY_SIZE = 1000000
+```
+
+> Detailed explanation of parameters in the steps below. 
 
 ### 2. Initialize the Tokenizer class:
 ```py
