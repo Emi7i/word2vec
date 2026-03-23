@@ -104,9 +104,9 @@ class Model:
     def get_context_words(self, target_index: int) -> list[int]:
         """Get the surrounding words around the target word and returns their indexes."""
         start = max(0, target_index - self.window_size)
-        end = min(len(wordlist), target_index + self.window_size + 1)
+        end = min(len(self.tokenizer.words), target_index + self.window_size + 1)
 
-        context = wordlist[start:target_index] + wordlist[target_index+1:end] # removes only the center word (only once)
+        context = self.tokenizer.words[start:target_index] + self.tokenizer.words[target_index+1:end] # removes only the center word (only once)
         return [self.tokenizer.word2index[w] for w in context] # returns indexes of words
 
     @staticmethod

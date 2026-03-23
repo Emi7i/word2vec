@@ -13,7 +13,6 @@ class Tokenizer:
 
         self.load_words(frequency, max_vocabulary_size)
         self.tokenize(self.words)
-        self.init_dataset()
 
     def load_words(self, frequency: int = 0, max_vocabulary_size: int = 0):
         """Load words from a file, replace specific characters and calls tokenize function."""
